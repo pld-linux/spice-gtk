@@ -1,0 +1,20 @@
+--- spice-gtk-0.6/gtk/controller/menu.c.orig	2011-04-15 19:01:38.000000000 +0200
++++ spice-gtk-0.6/gtk/controller/menu.c	2011-07-19 17:42:29.895429237 +0200
+@@ -15,6 +15,7 @@
+ 
+ #include <glib.h>
+ #include <glib-object.h>
++#include <stdint.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <spice/controller_prot.h>
+--- spice-gtk-0.6/gtk/controller/controller.c.orig	2011-04-15 19:01:38.000000000 +0200
++++ spice-gtk-0.6/gtk/controller/controller.c	2011-07-19 17:42:52.228763319 +0200
+@@ -15,6 +15,7 @@
+ 
+ #include <glib.h>
+ #include <glib-object.h>
++#include <stdint.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <spice/controller_prot.h>
