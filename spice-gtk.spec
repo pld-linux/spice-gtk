@@ -1,16 +1,13 @@
-# TODO: build for gtk+3 or both? (spice-glib-*, spice-gtk-2-*, spice-gtk-3-* in such case?)
-# NOTE: python requires gtk-2 version
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.6
+Version:	0.7
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	fe4b31a4e7b20ec53ff58d53957ab0b1
+# Source0-md5:	a47ca51ef4bb27cab35ddbfb9e6c0fff
 Patch0:		%{name}-sh.patch
-Patch1:		%{name}-proto.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake
@@ -22,8 +19,9 @@ BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	glib2-devel >= 1:2.22
 BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	gtk+2-devel >= 2:2.18.0
-#BuildRequires:	gtk+3-devel >= 3.0
+BuildRequires:	gtk+3-devel >= 3.0
 BuildRequires:	intltool >= 0.40.0
+BuildRequires:	libcacard-devel >= 0.1.2
 BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.0
@@ -35,12 +33,11 @@ BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	python-devel >= 2.0
 BuildRequires:	python-pygtk-devel >= 2:2.0.0
-BuildRequires:	spice-protocol >= 0.6.3
+BuildRequires:	spice-protocol >= 0.8.1
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
-Requires:	celt051 >= 0.5.1.1
-Requires:	glib2 >= 1:2.22
-Requires:	pixman >= 0.17.7
+Requires:	libcacard >= 0.1.2
+Requires:	spice-glib = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -50,50 +47,127 @@ A GTK+ client and libraries for SPICE remote desktop servers.
 Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE.
 
 %package devel
-Summary:	Header files for SPICE client libraries
-Summary(pl.UTF-8):	Pliki nagłówkowe bibliotek klienckich SPICE
+Summary:	Header files for SPICE GTK 3.0 client library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0
+Group:		X11/Development/Libraries
+Requires:	spice-glib-devel = %{version}-%{release}
+Requires:	gtk+3-devel >= 3.0
+
+%description devel
+Header files for SPICE GTK 3.0 client library.
+
+%description devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0.
+
+%package static
+Summary:	Static SPICE GTK 3.0 client library
+Summary(pl.UTF-8):	Statyczna biblioteka kliencka SPICE GTK 3.0
+Group:		X11/Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description static
+Static SPICE GTK 3.0 client library.
+
+%description static -l pl.UTF-8
+Statyczna biblioteka kliencka SPICE GTK 3.0.
+
+%package apidocs
+Summary:	SPICE GTK API documentation
+Summary(pl.UTF-8):	Dokumentacja API bibliotek SPICE GTK
+Group:		Documentation
+
+%description apidocs
+API documentation for SPICE GTK libraries.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API bibliotek SPICE GTK.
+
+%package -n spice-glib
+Summary:	SPICE Client GLib library
+Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
+Group:		Libraries
+Requires:	celt051 >= 0.5.1.1
+Requires:	glib2 >= 1:2.22
+Requires:	pixman >= 0.17.7
+
+%description -n spice-glib
+SPICE Client GLib library.
+
+%description -n spice-glib -l pl.UTF-8
+Biblioteka kliencka SPICE GLib.
+
+%package -n spice-glib-devel
+Summary:	Header files for SPICE Client GLib library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{release}
 Requires:	celt051-devel >= 0.5.1.1
 Requires:	glib2-devel >= 1:2.22
 Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
-Requires:	spice-protocol >= 0.6.3
+Requires:	spice-glib = %{version}-%{release}
+Requires:	spice-protocol >= 0.8.1
 
-%description devel
-Header files for SPICE client libraries.
+%description -n spice-glib-devel
+Header files for SPICE Client GLib library.
 
-%description devel -l pl.UTF-8
-Pliki nagłówkowe bibliotek klienckich SPICE.
+%description -n spice-glib-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki klienckiej SPICE GLib.
 
-%package static
-Summary:	Static SPICE client libraries
-Summary(pl.UTF-8):	Statyczne biblioteki klienckie SPICE
+%package -n spice-glib-static
+Summary:	SPICE Client GLib static library
+Summary(pl.UTF-8):	Statyczna biblioteka kliencka SPICE GLib
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	spice-glib-devel = %{version}-%{release}
 
-%description static
-Static SPICE client libraries.
+%description -n spice-glib-static
+SPICE Client GLib static library.
 
-%description static -l pl.UTF-8
-Statyczne biblioteki klienckie SPICE.
+%description -n spice-glib-static -l pl.UTF-8
+Statyczna biblioteka kliencka SPICE GLib.
 
-%package apidocs
-Summary:	SPICE GTK API documentation
-Summary(pl.UTF-8):	Dokumentacja API biblioteki SPICE GTK
-Group:		Documentation
+%package -n spice-gtk2
+Summary:	SPICE Client GTK 2.0 library
+Summary(pl.UTF-8):	Biblioteka kliencka SPICE GTK 2.0
+Group:		X11/Libraries
+Requires:	gtk+2 >= 2:2.18.0
+Requires:	spice-glib = %{version}-%{release}
 
-%description apidocs
-API documentation for SPICE GTK library.
+%description -n spice-gtk2
+SPICE Client GTK 2.0 library.
 
-%description apidocs -l pl.UTF-8
-Dokumentacja API biblioteki SPICE GTK.
+%description -n spice-gtk2 -l pl.UTF-8
+Biblioteka kliencka SPICE GTK 2.0.
+
+%package -n spice-gtk2-devel
+Summary:	Header files for SPICE Client GTK 2.0 library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 2.0
+Group:		X11/Development/Libraries
+Requires:	gtk+2-devel >= 2:2.18.0
+Requires:	spice-glib-devel = %{version}-%{release}
+
+%description -n spice-gtk2-devel
+Header files for SPICE Client GTK 2.0 library.
+
+%description -n spice-gtk2-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki klienckiej SPICE GTK 2.0.
+
+%package -n spice-gtk2-static
+Summary:	SPICE Client GTK 2.0 static library
+Summary(pl.UTF-8):	Statyczna biblioteka kliencka SPICE GTK 2.0
+Group:		X11/Development/Libraries
+Requires:	spice-gtk2-devel = %{version}-%{release}
+
+%description -n spice-gtk2-static
+SPICE Client GTK 2.0 static library.
+
+%description -n spice-gtk2-static -l pl.UTF-8
+Statyczna biblioteka kliencka SPICE GTK 2.0.
 
 %package -n python-spice-gtk
 Summary:	Python interface to SPICE client GTK library
 Summary(pl.UTF-8):	Pythonowy interfejs do biblioteki klienckiej SPICE GTK
 Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
+Requires:	spice-gtk2 = %{version}-%{release}
 
 %description -n python-spice-gtk
 Python interface to SPICE client GTK library.
@@ -101,23 +175,24 @@ Python interface to SPICE client GTK library.
 %description -n python-spice-gtk -l pl.UTF-8
 Pythonowy interfejs do biblioteki klienckiej SPICE GTK.
 
-%package -n vala-spice-gtk
-Summary:	Vala API for SPICE client GTK library
-Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE GTK
+%package -n vala-spice-protocol
+Summary:	Vala API for SPICE client library
+Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
+Requires:	spice-protocol >= 0.8.1
 Requires:	vala >= 0.11.7
 
-%description -n vala-spice-gtk
-Vala API for SPICE client GTK library.
+%description -n vala-spice-protocol
+Vala API for SPICE client library.
 
-%description -n vala-spice-gtk -l pl.UTF-8
-Interfejs języka Vala do biblioteki klienckiej SPICE GTK.
+%description -n vala-spice-protocol -l pl.UTF-8
+Interfejs języka Vala do biblioteki klienckiej SPICE.
 
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
+
+mkdir gtk{2,3}
 
 %build
 %{__gettextize}
@@ -127,15 +202,29 @@ Interfejs języka Vala do biblioteki klienckiej SPICE GTK.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-%configure \
+
+cd gtk2
+../%configure \
 	--disable-silent-rules \
+	--with-gtk=2.0 \
+	--with-html-dir=%{_gtkdocdir}
+%{__make}
+
+cd ../gtk3
+../%configure \
+	--disable-silent-rules \
+	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+# gtk2 first, so executables will use gtk3 libs
+%{__make} -C gtk2 install \
+	DESTDIR=$RPM_BUILD_ROOT
+
+%{__make} -C gtk3 install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.{la,a}
@@ -150,48 +239,81 @@ rm -rf $RPM_BUILD_ROOT
 %post	-p /sbin/ldconfig
 %postun	-p /sbin/ldconfig
 
+%post	-n spice-glib -p /sbin/ldconfig
+%postun	-n spice-glib -p /sbin/ldconfig
+
+%post	-n spice-gtk2 -p /sbin/ldconfig
+%postun	-n spice-gtk2 -p /sbin/ldconfig
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS NEWS README THANKS TODO
 %attr(755,root,root) %{_bindir}/snappy
 %attr(755,root,root) %{_bindir}/spicy
-%attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.3
-%attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-2.0.so.1
-%attr(755,root,root) %{_libdir}/libspice-controller.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-controller.so.0
-%{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
-%{_libdir}/girepository-1.0/SpiceClientGtk-2.0.typelib
+%attr(755,root,root) %{_bindir}/spicy-stats
+%attr(755,root,root) %{_libdir}/libspice-client-gtk-3.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-3.0.so.1
+%{_libdir}/girepository-1.0/SpiceClientGtk-3.0.typelib
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so
-%attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so
-%attr(755,root,root) %{_libdir}/libspice-controller.so
-%{_includedir}/spice-client-glib-2.0
-%{_includedir}/spice-client-gtk-2.0
-%{_includedir}/spice-controller
-%{_pkgconfigdir}/spice-client-glib-2.0.pc
-%{_pkgconfigdir}/spice-client-gtk-2.0.pc
-%{_pkgconfigdir}/spice-controller.pc
-%{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
-%{_datadir}/gir-1.0/SpiceClientGtk-2.0.gir
+%attr(755,root,root) %{_libdir}/libspice-client-gtk-3.0.so
+%{_includedir}/spice-client-gtk-3.0
+%{_pkgconfigdir}/spice-client-gtk-3.0.pc
+%{_datadir}/gir-1.0/SpiceClientGtk-3.0.gir
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/libspice-client-glib-2.0.a
-%{_libdir}/libspice-client-gtk-2.0.a
-%{_libdir}/libspice-controller.a
+%{_libdir}/libspice-client-gtk-3.0.a
 
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/spice-gtk
 
+%files -n spice-glib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.4
+%attr(755,root,root) %{_libdir}/libspice-controller.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libspice-controller.so.0
+%{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
+
+%files -n spice-glib-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so
+%attr(755,root,root) %{_libdir}/libspice-controller.so
+%{_includedir}/spice-client-glib-2.0
+%{_includedir}/spice-controller
+%{_pkgconfigdir}/spice-client-glib-2.0.pc
+%{_pkgconfigdir}/spice-controller.pc
+%{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
+
+%files -n spice-glib-static
+%defattr(644,root,root,755)
+%{_libdir}/libspice-client-glib-2.0.a
+%{_libdir}/libspice-controller.a
+
+%files -n spice-gtk2
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-2.0.so.1
+%{_libdir}/girepository-1.0/SpiceClientGtk-2.0.typelib
+
+%files -n spice-gtk2-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so
+%{_includedir}/spice-client-gtk-2.0
+%{_pkgconfigdir}/spice-client-gtk-2.0.pc
+%{_datadir}/gir-1.0/SpiceClientGtk-2.0.gir
+
+%files -n spice-gtk2-static
+%defattr(644,root,root,755)
+%{_libdir}/libspice-client-gtk-2.0.a
+
 %files -n python-spice-gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/SpiceClientGtk.so
 
-%files -n vala-spice-gtk
+%files -n vala-spice-protocol
 %defattr(644,root,root,755)
 %{_datadir}/vala/vapi/spice-protocol.vapi
