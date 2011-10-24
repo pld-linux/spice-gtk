@@ -2,7 +2,7 @@ Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
 Version:	0.7
-Release:	1
+Release:	2
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
@@ -50,6 +50,7 @@ Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE.
 Summary:	Header files for SPICE GTK 3.0 client library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0
 Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 Requires:	spice-glib-devel = %{version}-%{release}
 Requires:	gtk+3-devel >= 3.0
 
