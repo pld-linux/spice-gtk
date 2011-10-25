@@ -209,23 +209,23 @@ cd gtk2
 	--disable-silent-rules \
 	--with-gtk=2.0 \
 	--with-html-dir=%{_gtkdocdir}
-%{__make} -j1
+%{__make}
 
 cd ../gtk3
 ../%configure \
 	--disable-silent-rules \
 	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
-%{__make} -j1
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 # gtk2 first, so executables will use gtk3 libs
-%{__make} -C gtk2 install \
+%{__make} -C gtk2 install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__make} -C gtk3 install \
+%{__make} -C gtk3 install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.{la,a}
