@@ -209,14 +209,14 @@ cd gtk2
 	--disable-silent-rules \
 	--with-gtk=2.0 \
 	--with-html-dir=%{_gtkdocdir}
-%{__make}
+%{__make} -j1
 
 cd ../gtk3
 ../%configure \
 	--disable-silent-rules \
 	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
-%{__make}
+%{__make} -j1
 
 %install
 rm -rf $RPM_BUILD_ROOT
