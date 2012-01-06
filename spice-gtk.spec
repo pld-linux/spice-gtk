@@ -1,16 +1,24 @@
+#
+# Conditional build:
+%bcond_without	gtk2		# GTK+ 2 interfaces
+%bcond_without	gtk3		# GTK+ 3 interfaces
+%bcond_without	smartcard	# Smartcard support
+%bcond_without	usbredir	# USB redirection
+#
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.7
-Release:	3
+Version:	0.7.159
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	a47ca51ef4bb27cab35ddbfb9e6c0fff
+# Source0-md5:	5b0e3c9ebbc07790eed2aaff06adff4b
 Patch0:		%{name}-sh.patch
+Patch1:		%{name}-builddir.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake
+BuildRequires:	automake >= 1.6
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	celt051-devel >= 0.5.1.1
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -18,10 +26,9 @@ BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	glib2-devel >= 1:2.22
 BuildRequires:	gtk-doc >= 1.14
-BuildRequires:	gtk+2-devel >= 2:2.18.0
-BuildRequires:	gtk+3-devel >= 3.0
+%{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	intltool >= 0.40.0
-BuildRequires:	libcacard-devel >= 0.1.2
+%{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
 BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.0
@@ -31,12 +38,23 @@ BuildRequires:	perl-base >= 1:5.8.1
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
-BuildRequires:	python-devel >= 2.0
-BuildRequires:	python-pygtk-devel >= 2:2.0.0
-BuildRequires:	spice-protocol >= 0.8.1
+BuildRequires:	spice-protocol >= 0.9.1
+BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
-Requires:	libcacard >= 0.1.2
+%if %{with gtk2}
+BuildRequires:	gtk+2-devel >= 2:2.18.0
+BuildRequires:	python-devel >= 2.0
+BuildRequires:	python-pygtk-devel >= 2:2.0.0
+%endif
+%if %{with usbredir}
+BuildRequires:	acl-devel
+BuildRequires:	libusb-devel >= 1.0.9
+BuildRequires:	polkit-devel
+BuildRequires:	udev-glib-devel
+BuildRequires:	usbredir-devel >= 0.3.1
+%endif
+%{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -89,7 +107,12 @@ Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	celt051 >= 0.5.1.1
 Requires:	glib2 >= 1:2.22
+%{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	pixman >= 0.17.7
+%if %{with usbredir}
+Requires:	libusb >= 1.0.9
+Requires:	usbredir >= 0.3.1
+%endif
 
 %description -n spice-glib
 SPICE Client GLib library.
@@ -102,11 +125,20 @@ Summary:	Header files for SPICE Client GLib library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	celt051-devel >= 0.5.1.1
+Requires:	cyrus-sasl-devel >= 2.0
 Requires:	glib2-devel >= 1:2.22
+%{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
+Requires:	libjpeg-devel
 Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
+Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.8.1
+Requires:	spice-protocol >= 0.9.1
+%if %{with usbredir}
+Requires:	libusb-devel >= 1.0.9
+Requires:	udev-glib-devel
+Requires:	usbredir-devel >= 0.3.1
+%endif
 
 %description -n spice-glib-devel
 Header files for SPICE Client GLib library.
@@ -125,6 +157,20 @@ SPICE Client GLib static library.
 
 %description -n spice-glib-static -l pl.UTF-8
 Statyczna biblioteka kliencka SPICE GLib.
+
+%package -n spice-glib-usb
+Summary:	USB redirection ACL helper for SPICE Client GLib library
+Summary(pl.UTF-8):	Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej SPICE GLib
+Group:		Applications/System
+Requires:	spice-glib = %{version}-%{release}
+Requires:	polkit
+
+%description -n spice-glib-usb
+USB redirection ACL helper for SPICE Client GLib library.
+
+%description -n spice-glib-usb -l pl.UTF-8
+Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej
+SPICE GLib.
 
 %package -n spice-gtk2
 Summary:	SPICE Client GTK 2.0 library
@@ -180,8 +226,8 @@ Pythonowy interfejs do biblioteki klienckiej SPICE GTK.
 Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	spice-protocol >= 0.8.1
-Requires:	vala >= 0.11.7
+Requires:	spice-protocol >= 0.9.1
+Requires:	vala >= 0.14
 
 %description -n vala-spice-protocol
 Vala API for SPICE client library.
@@ -192,8 +238,9 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
-mkdir gtk{2,3}
+mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
 %build
 %{__gettextize}
@@ -204,29 +251,43 @@ mkdir gtk{2,3}
 %{__autoheader}
 %{__automake}
 
+%if %{with gtk2}
 cd gtk2
 ../%configure \
 	--disable-silent-rules \
+	%{!?with_smartcard:--disable-smartcard} \
+	%{!?with_usbredir:--disable-usbredir} \
 	--with-gtk=2.0 \
 	--with-html-dir=%{_gtkdocdir}
 %{__make}
+cd ..
+%endif
 
-cd ../gtk3
+%if %{with gtk3}
+cd gtk3
 ../%configure \
 	--disable-silent-rules \
+	%{!?with_smartcard:--disable-smartcard} \
+	%{!?with_usbredir:--disable-usbredir} \
+	--enable-gtk-doc \
 	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
 %{__make}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 # gtk2 first, so executables will use gtk3 libs
+%if %{with gtk2}
 %{__make} -C gtk2 install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
+%if %{with gtk3}
 %{__make} -C gtk3 install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
+%endif
 
 %{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.{la,a}
 # obsoleted by pkg-config
@@ -246,6 +307,7 @@ rm -rf $RPM_BUILD_ROOT
 %post	-n spice-gtk2 -p /sbin/ldconfig
 %postun	-n spice-gtk2 -p /sbin/ldconfig
 
+%if %{with gtk3}
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS NEWS README THANKS TODO
@@ -270,11 +332,12 @@ rm -rf $RPM_BUILD_ROOT
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/spice-gtk
+%endif
 
 %files -n spice-glib
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.4
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.1
 %attr(755,root,root) %{_libdir}/libspice-controller.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libspice-controller.so.0
 %{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
@@ -294,6 +357,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libspice-client-glib-2.0.a
 %{_libdir}/libspice-controller.a
 
+%if %{with usbredir}
+%files -n spice-glib-usb
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/spice-client-glib-usb-acl-helper
+%{_datadir}/polkit-1/actions/org.spice-space.lowlevelusbaccess.policy
+%endif
+
+%if %{with gtk2}
 %files -n spice-gtk2
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so.*.*.*
@@ -314,6 +385,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n python-spice-gtk
 %defattr(644,root,root,755)
 %attr(755,root,root) %{py_sitedir}/SpiceClientGtk.so
+%endif
 
 %files -n vala-spice-protocol
 %defattr(644,root,root,755)
