@@ -1,0 +1,12 @@
+For usbredirfilter_string_to_rules()
+--- spice-gtk-0.8/configure.ac.orig	2012-01-18 16:57:54.759116620 +0100
++++ spice-gtk-0.8/configure.ac	2012-01-18 17:20:01.155827699 +0100
+@@ -330,7 +330,7 @@
+ else
+   PKG_CHECK_MODULES(GUDEV, gudev-1.0)
+   PKG_CHECK_MODULES(LIBUSB, libusb-1.0 >= 1.0.9)
+-  PKG_CHECK_MODULES(LIBUSBREDIRHOST, libusbredirhost >= 0.3.3)
++  PKG_CHECK_MODULES(LIBUSBREDIRHOST, libusbredirhost >= 0.3.3 libusbredirparser >= 0.3.3)
+   AC_DEFINE(USE_USBREDIR, [1], [Define if supporting usbredir proxying])
+   AM_CONDITIONAL(WITH_USBREDIR, true)
+   if test "x$enable_polkit" = "xno"; then

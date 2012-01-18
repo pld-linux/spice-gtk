@@ -8,14 +8,15 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.7.159
+Version:	0.8
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	5b0e3c9ebbc07790eed2aaff06adff4b
+# Source0-md5:	761b6c3d74d962d437bdd72f54292498
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
+Patch2:		%{name}-usbredir.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -38,7 +39,7 @@ BuildRequires:	perl-base >= 1:5.8.1
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
-BuildRequires:	spice-protocol >= 0.9.1
+BuildRequires:	spice-protocol >= 0.10.1
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
@@ -50,9 +51,9 @@ BuildRequires:	python-pygtk-devel >= 2:2.0.0
 %if %{with usbredir}
 BuildRequires:	acl-devel
 BuildRequires:	libusb-devel >= 1.0.9
-BuildRequires:	polkit-devel
+BuildRequires:	polkit-devel >= 0.96
 BuildRequires:	udev-glib-devel
-BuildRequires:	usbredir-devel >= 0.3.1
+BuildRequires:	usbredir-devel >= 0.3.3
 %endif
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
@@ -111,7 +112,7 @@ Requires:	glib2 >= 1:2.22
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
 Requires:	libusb >= 1.0.9
-Requires:	usbredir >= 0.3.1
+Requires:	usbredir >= 0.3.3
 %endif
 
 %description -n spice-glib
@@ -133,11 +134,11 @@ Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
 Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.9.1
+Requires:	spice-protocol >= 0.10.1
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.9
 Requires:	udev-glib-devel
-Requires:	usbredir-devel >= 0.3.1
+Requires:	usbredir-devel >= 0.3.3
 %endif
 
 %description -n spice-glib-devel
@@ -163,7 +164,7 @@ Summary:	USB redirection ACL helper for SPICE Client GLib library
 Summary(pl.UTF-8):	Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej SPICE GLib
 Group:		Applications/System
 Requires:	spice-glib = %{version}-%{release}
-Requires:	polkit
+Requires:	polkit >= 0.96
 
 %description -n spice-glib-usb
 USB redirection ACL helper for SPICE Client GLib library.
@@ -226,7 +227,7 @@ Pythonowy interfejs do biblioteki klienckiej SPICE GTK.
 Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	spice-protocol >= 0.9.1
+Requires:	spice-protocol >= 0.10.1
 Requires:	vala >= 0.14
 
 %description -n vala-spice-protocol
@@ -239,6 +240,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
