@@ -1,15 +1,11 @@
---- spice-gtk-0.7.159/gtk/Makefile.am.orig	2011-12-22 13:48:49.000000000 +0100
-+++ spice-gtk-0.7.159/gtk/Makefile.am	2012-01-06 08:06:44.283333606 +0100
-@@ -563,10 +563,10 @@
+--- spice-gtk-0.9/gtk/Makefile.am.orig	2012-01-31 14:31:38.000000000 +0100
++++ spice-gtk-0.9/gtk/Makefile.am	2012-02-04 08:30:40.437278387 +0100
+@@ -549,7 +549,7 @@
  DEFSDIR = `pkg-config --variable=defsdir pygtk-2.0`
  
  spice-client-gtk.defs: $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS)
--	$(AM_V_GEN)$(PYTHON) $(CODEGENDIR)/h2def.py -f spice-client-gtk-manual.defs $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) > $@
-+	$(AM_V_GEN)$(PYTHON) $(CODEGENDIR)/h2def.pyc -f $(srcdir)/spice-client-gtk-manual.defs $$(for f in $(libspice_client_gtkinclude_HEADERS) $(nodist_libspice_client_gtkinclude_HEADERS) $(libspice_client_glibinclude_HEADERS) $(nodist_libspice_client_glibinclude_HEADERS) ; do if test -f $$f ; then echo $$f ; else echo $(srcdir)/$$f ; fi ; done) > $@
+-	$(AM_V_GEN)$(PYTHON) $(CODEGENDIR)/h2def.py \
++	$(AM_V_GEN)$(PYTHON) $(CODEGENDIR)/h2def.pyc \
+ 		-f $(srcdir)/spice-client-gtk-manual.defs \
+ 		$^ > $@
  
- spice-client-gtk-module.defs.c: spice-client-gtk.override spice-client-gtk.defs spice-client-gtk-manual.defs
--	@cat $(srcdir)/spice-client-gtk.defs $(srcdir)/spice-client-gtk-manual.defs > tmp.defs
-+	@cat spice-client-gtk.defs $(srcdir)/spice-client-gtk-manual.defs > tmp.defs
- 	$(AM_V_GEN)pygobject-codegen-2.0 --prefix spice \
- 			  --register $(DEFSDIR)/gdk-types.defs \
- 			  --register $(DEFSDIR)/gtk-types.defs \
