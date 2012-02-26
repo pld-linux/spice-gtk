@@ -8,15 +8,14 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.9
+Version:	0.10
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	29dd7372ac099aedb4d024fc4eacd374
+# Source0-md5:	5f3e49f3634a229af9b1679540c23019
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
-Patch2:		%{name}-usbredir.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -54,7 +53,7 @@ BuildRequires:	acl-devel
 BuildRequires:	libusb-devel >= 1.0.9
 BuildRequires:	polkit-devel >= 0.96
 BuildRequires:	udev-glib-devel
-BuildRequires:	usbredir-devel >= 0.3.3
+BuildRequires:	usbredir-devel >= 0.4
 %endif
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
@@ -113,7 +112,7 @@ Requires:	glib2 >= 1:2.22
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
 Requires:	libusb >= 1.0.9
-Requires:	usbredir >= 0.3.3
+Requires:	usbredir >= 0.4
 %endif
 
 %description -n spice-glib
@@ -241,7 +240,6 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
