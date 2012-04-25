@@ -8,12 +8,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.11
+Version:	0.12
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	c8f2c274ab81e0ac273be5c6490b8603
+# Source0-md5:	2fec0ba391447b5b4d9242455c55b2a3
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
 URL:		http://spice-space.org/
