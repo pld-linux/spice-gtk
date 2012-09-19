@@ -8,12 +8,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.12
+Version:	0.13
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	2fec0ba391447b5b4d9242455c55b2a3
+# Source0-md5:	97ed79c9df1ad0997e605c22a7ce47c7
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
 URL:		http://spice-space.org/
@@ -27,6 +27,7 @@ BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	glib2-devel >= 1:2.22
 BuildRequires:	gtk-doc >= 1.14
+%{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	intltool >= 0.40.0
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
@@ -39,6 +40,7 @@ BuildRequires:	perl-base >= 1:5.8.1
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
+BuildRequires:	sed >= 4.0
 BuildRequires:	spice-protocol >= 0.10.1
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
@@ -241,6 +243,9 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %patch0 -p1
 %patch1 -p1
 
+# kill am portability warning (there is -Werror)
+sed -i -e '/AC_PROG_LIBTOOL/aAM_PROG_AR' configure.ac
+
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
 %build
@@ -315,7 +320,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/spicy
 %attr(755,root,root) %{_bindir}/spicy-stats
 %attr(755,root,root) %{_libdir}/libspice-client-gtk-3.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-3.0.so.1
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-3.0.so.4
 %{_libdir}/girepository-1.0/SpiceClientGtk-3.0.typelib
 
 %files devel
@@ -337,7 +342,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n spice-glib
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.1
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.8
 %attr(755,root,root) %{_libdir}/libspice-controller.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libspice-controller.so.0
 %{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
@@ -368,7 +373,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -n spice-gtk2
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-gtk-2.0.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-2.0.so.1
+%attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-2.0.so.4
 %{_libdir}/girepository-1.0/SpiceClientGtk-2.0.typelib
 
 %files -n spice-gtk2-devel
