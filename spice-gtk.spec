@@ -8,14 +8,15 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.13
+Version:	0.14
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	97ed79c9df1ad0997e605c22a7ce47c7
+# Source0-md5:	c105e3b7f9c9eb293b0d6a8d35f6a5fd
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
+Patch2:		%{name}-usbredir.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -55,7 +56,7 @@ BuildRequires:	acl-devel
 BuildRequires:	libusb-devel >= 1.0.9
 BuildRequires:	polkit-devel >= 0.96
 BuildRequires:	udev-glib-devel
-BuildRequires:	usbredir-devel >= 0.4.2
+BuildRequires:	usbredir-devel >= 0.5.2
 %endif
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
@@ -114,7 +115,7 @@ Requires:	glib2 >= 1:2.22
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
 Requires:	libusb >= 1.0.9
-Requires:	usbredir >= 0.4.2
+Requires:	usbredir >= 0.5.2
 %endif
 
 %description -n spice-glib
@@ -140,7 +141,7 @@ Requires:	spice-protocol >= 0.10.1
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.9
 Requires:	udev-glib-devel
-Requires:	usbredir-devel >= 0.4.2
+Requires:	usbredir-devel >= 0.5.2
 %endif
 
 %description -n spice-glib-devel
@@ -242,6 +243,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # kill am portability warning (there is -Werror)
 sed -i -e '/AC_PROG_LIBTOOL/aAM_PROG_AR' configure.ac
