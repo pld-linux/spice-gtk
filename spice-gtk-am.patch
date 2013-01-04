@@ -1,0 +1,11 @@
+--- spice-gtk-0.15/configure.ac.orig	2013-01-04 17:13:10.694722716 +0100
++++ spice-gtk-0.15/configure.ac	2013-01-04 17:45:16.591349240 +0100
+@@ -4,7 +4,7 @@
+         [spice-devel@lists.freedesktop.org])
+ 
+ AC_CONFIG_MACRO_DIR([m4])
+-AM_CONFIG_HEADER([config.h])
++AC_CONFIG_HEADERS([config.h])
+ AC_CONFIG_AUX_DIR([build-aux])
+ 
+ AM_INIT_AUTOMAKE([foreign dist-bzip2 -Wall -Werror])

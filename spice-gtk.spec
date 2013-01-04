@@ -8,15 +8,15 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.14
-Release:	2
+Version:	0.15
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	c105e3b7f9c9eb293b0d6a8d35f6a5fd
+# Source0-md5:	316ed949e4dfb046a99a9b0c3c9a6e77
 Patch0:		%{name}-sh.patch
 Patch1:		%{name}-builddir.patch
-Patch2:		%{name}-usbredir.patch
+Patch2:		%{name}-am.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -26,7 +26,7 @@ BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	gobject-introspection-devel >= 0.9.4
-BuildRequires:	glib2-devel >= 1:2.22
+BuildRequires:	glib2-devel >= 1:2.26
 BuildRequires:	gtk-doc >= 1.14
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
@@ -110,7 +110,7 @@ Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	celt051 >= 0.5.1.1
-Requires:	glib2 >= 1:2.22
+Requires:	glib2 >= 1:2.26
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
@@ -130,7 +130,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	celt051-devel >= 0.5.1.1
 Requires:	cyrus-sasl-devel >= 2.0
-Requires:	glib2-devel >= 1:2.22
+Requires:	glib2-devel >= 1:2.26
 %{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
 Requires:	libjpeg-devel
 Requires:	openssl-devel
@@ -244,9 +244,6 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-
-# kill am portability warning (there is -Werror)
-sed -i -e '/AC_PROG_LIBTOOL/aAM_PROG_AR' configure.ac
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
