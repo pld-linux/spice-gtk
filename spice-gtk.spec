@@ -8,15 +8,14 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.16
+Version:	0.18
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	1b61697d643f1acc0e2950834dfa78f4
-Patch0:		%{name}-sh.patch
-Patch1:		%{name}-builddir.patch
-Patch2:		%{name}-am.patch
+# Source0-md5:	bcd73f857d137bca8e24380e8f7977d2
+Patch0:		%{name}-builddir.patch
+Patch1:		%{name}-am.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -243,7 +242,6 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
