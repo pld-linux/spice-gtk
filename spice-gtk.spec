@@ -1,3 +1,4 @@
+# TODO: libusb-devel >= 1.0.16 is preferred over udev-glib for libusb hotplug
 #
 # Conditional build:
 %bcond_without	gtk2		# GTK+ 2 interfaces
@@ -8,12 +9,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.21
+Version:	0.22
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
-Source0:	http://spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	290d1ad5ab8f1e5708fa2549dde2e024
+Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
+# Source0-md5:	518eb2ed7b336ad424b6f91f7bf734fc
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
 URL:		http://spice-space.org/
