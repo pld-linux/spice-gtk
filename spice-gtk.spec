@@ -1,4 +1,3 @@
-# TODO: libusb-devel >= 1.0.16 is preferred over udev-glib for libusb hotplug
 #
 # Conditional build:
 %bcond_without	gtk2		# GTK+ 2 interfaces
@@ -9,12 +8,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.22
+Version:	0.23
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	518eb2ed7b336ad424b6f91f7bf734fc
+# Source0-md5:	575c6f532067e4003754e9b050a27bec
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
 URL:		http://spice-space.org/
@@ -53,9 +52,8 @@ BuildRequires:	python-pygtk-devel >= 2:2.0.0
 %endif
 %if %{with usbredir}
 BuildRequires:	acl-devel
-BuildRequires:	libusb-devel >= 1.0.9
+BuildRequires:	libusb-devel >= 1.0.16
 BuildRequires:	polkit-devel >= 0.96
-BuildRequires:	udev-glib-devel
 BuildRequires:	usbredir-devel >= 0.5.2
 %endif
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
@@ -114,7 +112,7 @@ Requires:	glib2 >= 1:2.26
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
-Requires:	libusb >= 1.0.9
+Requires:	libusb >= 1.0.16
 Requires:	usbredir >= 0.5.2
 %endif
 
@@ -139,8 +137,7 @@ Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
 Requires:	spice-protocol >= 0.10.1
 %if %{with usbredir}
-Requires:	libusb-devel >= 1.0.9
-Requires:	udev-glib-devel
+Requires:	libusb-devel >= 1.0.16
 Requires:	usbredir-devel >= 0.5.2
 %endif
 
@@ -231,7 +228,7 @@ Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
 Requires:	spice-protocol >= 0.10.1
-Requires:	vala >= 0.14
+Requires:	vala >= 2:0.14
 
 %description -n vala-spice-protocol
 Vala API for SPICE client library.
