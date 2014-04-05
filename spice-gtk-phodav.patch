@@ -1,0 +1,203 @@
+From d17d43ce5c43a83cbd7309f8d4fda3b802fa556a Mon Sep 17 00:00:00 2001
+From: Marc-André Lureau <marcandre.lureau@redhat.com>
+Date: Wed, 02 Apr 2014 11:49:36 +0000
+Subject: Make phodav an optional external dependency
+
+Now that upstream provides a stable/versioned API, it will be
+easier to deal with than with submodules.
+---
+#diff --git a/.gitmodules b/.gitmodules
+#index cfce54a..0c618ee 100644
+#--- a/.gitmodules
+#+++ b/.gitmodules
+#@@ -1,6 +1,3 @@
+# [submodule "spice-common"]
+# 	path = spice-common
+# 	url = ../spice-common
+#-[submodule "gtk/phodav"]
+#-	path = gtk/phodav
+#-	url = git://git.gnome.org/phodav
+#diff --git a/autogen.sh b/autogen.sh
+#index d71be70..7b4415f 100755
+#--- a/autogen.sh
+#+++ b/autogen.sh
+#@@ -6,7 +6,6 @@ srcdir=`dirname $0`
+# test -z "$srcdir" && srcdir=.
+# 
+# git submodule update --init --recursive
+#-(cd "$srcdir/gtk/phodav/" && intltoolize -f)
+# 
+# gtkdocize
+# autoreconf -v --force --install
+diff --git a/configure.ac b/configure.ac
+index fa3a2e4..45417d2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -75,8 +75,6 @@ AC_CONFIG_SUBDIRS([spice-common])
+ COMMON_CFLAGS='-I ${top_srcdir}/spice-common/ -I ${top_srcdir}/spice-common/spice-protocol/'
+ AC_SUBST(COMMON_CFLAGS)
+ 
+-AC_CONFIG_SUBDIRS([gtk/phodav])
+-
+ SPICE_GTK_MAJOR_VERSION=`echo $PACKAGE_VERSION | cut -d. -f1`
+ SPICE_GTK_MINOR_VERSION=`echo $PACKAGE_VERSION | cut -d. -f2`
+ SPICE_GTK_MICRO_VERSION=`echo $PACKAGE_VERSION | cut -d. -f3 | cut -d- -f1`
+@@ -273,6 +271,11 @@ PKG_CHECK_MODULES(SOUP, libsoup-2.4)
+ AC_SUBST(SOUP_CFLAGS)
+ AC_SUBST(SOUP_LIBS)
+ 
++PKG_CHECK_MODULES(PHODAV, [libphodav-1.0], [have_phodav=yes], [have_phodav=no])
++AC_SUBST(PHODAV_CFLAGS)
++AC_SUBST(PHODAV_LIBS)
++AS_IF([test "x$have_phodav" = "xyes"],
++       AC_DEFINE(USE_PHODAV, [1], [Define if supporting phodav]))
+ 
+ AC_ARG_WITH([audio],
+   AS_HELP_STRING([--with-audio=@<:@gstreamer/pulse/auto/no@:>@], [Select audio backend @<:@default=auto@:>@]),
+@@ -750,6 +753,7 @@ AC_MSG_NOTICE([
+         Smartcard support:        ${have_smartcard}
+         USB redirection support:  ${have_usbredir} ${with_usbredir_hotplug}
+         DBus:                     ${have_dbus}
++        PhoDAV:                   ${have_phodav}
+ 
+         Now type 'make' to build $PACKAGE
+ 
+diff --git a/gtk/Makefile.am b/gtk/Makefile.am
+index 2e38cce..e28220c 100644
+--- a/gtk/Makefile.am
++++ b/gtk/Makefile.am
+@@ -1,6 +1,5 @@
+ NULL =
+-
+-SUBDIRS = phodav
++SUBDIRS =
+ 
+ if WITH_CONTROLLER
+ SUBDIRS += controller
+@@ -97,6 +96,7 @@ SPICE_COMMON_CPPFLAGS =						\
+ 	$(USBREDIR_CFLAGS)					\
+ 	$(GUDEV_CFLAGS)						\
+ 	$(SOUP_CFLAGS)						\
++	$(PHODAV_CFLAGS)					\
+ 	$(NULL)
+ 
+ AM_CPPFLAGS =					\
+@@ -186,7 +186,6 @@ libspice_client_glib_2_0_la_LDFLAGS =	\
+ libspice_client_glib_2_0_la_LIBADD =					\
+ 	$(top_builddir)/spice-common/common/libspice-common.la		\
+ 	$(top_builddir)/spice-common/common/libspice-common-client.la	\
+-	phodav/libphodav.la						\
+ 	$(GLIB2_LIBS)							\
+ 	$(SOUP_LIBS)							\
+ 	$(GOBJECT2_LIBS)						\
+@@ -202,6 +201,7 @@ libspice_client_glib_2_0_la_LIBADD =					\
+ 	$(SMARTCARD_LIBS)						\
+ 	$(USBREDIR_LIBS)						\
+ 	$(GUDEV_LIBS)							\
++	$(PHODAV_LIBS)							\
+ 	$(NULL)
+ 
+ if WITH_POLKIT
+diff --git a/gtk/channel-webdav.c b/gtk/channel-webdav.c
+index 2bee513..c619e48 100644
+--- a/gtk/channel-webdav.c
++++ b/gtk/channel-webdav.c
+@@ -15,6 +15,8 @@
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, see <http://www.gnu.org/licenses/>.
+ */
++#include "config.h"
++
+ #include "spice-client.h"
+ #include "spice-common.h"
+ #include "spice-channel-priv.h"
+@@ -642,6 +644,7 @@ static void spice_webdav_handle_msg(SpiceChannel *channel, SpiceMsgIn *msg)
+ 
+ 
+ 
++#ifdef USE_PHODAV
+ static void new_connection(SoupSocket *sock,
+                            SoupSocket *new,
+                            gpointer    user_data)
+@@ -715,12 +718,14 @@ static PhodavServer* webdav_server_new(SpiceSession *session)
+ 
+     return dav;
+ }
++#endif /* USE_PHODAV */
+ 
+ static PhodavServer* phodav_server_get(SpiceSession *session, gint *port)
+ {
+     g_return_val_if_fail(SPICE_IS_SESSION(session), NULL);
+ 
+-    PhodavServer *self;
++#ifdef USE_PHODAV
++    PhodavServer *self = NULL;
+     static GStaticMutex mutex = G_STATIC_MUTEX_INIT;
+ 
+     g_static_mutex_lock(&mutex);
+@@ -735,4 +740,7 @@ static PhodavServer* phodav_server_get(SpiceSession *session, gint *port)
+         *port = phodav_server_get_port(self);
+ 
+     return self;
++#else
++    g_return_val_if_reached(NULL);
++#endif
+ }
+#diff --git a/gtk/phodav b/gtk/phodav
+#deleted file mode 160000
+#-Subproject 2f53900e88eab21b5bd023145e0a6cce3b9cfe0
+diff --git a/gtk/spice-channel.c b/gtk/spice-channel.c
+index 6f3f689..e460590 100644
+--- a/gtk/spice-channel.c
++++ b/gtk/spice-channel.c
+@@ -1945,7 +1945,9 @@ gchar *spice_channel_supported_string(void)
+ #ifdef USE_USBREDIR
+                      spice_channel_type_to_string(SPICE_CHANNEL_USBREDIR),
+ #endif
++#ifdef USE_PHODAV
+                      spice_channel_type_to_string(SPICE_CHANNEL_WEBDAV),
++#endif
+                      NULL);
+ }
+ 
+@@ -2010,10 +2012,12 @@ SpiceChannel *spice_channel_new(SpiceSession *s, int type, int id)
+         break;
+     }
+ #endif
++#ifdef USE_PHODAV
+     case SPICE_CHANNEL_WEBDAV: {
+         gtype = SPICE_TYPE_WEBDAV_CHANNEL;
+         break;
+     }
++#endif
+     case SPICE_CHANNEL_PORT:
+         gtype = SPICE_TYPE_PORT_CHANNEL;
+         break;
+diff --git a/gtk/spice-session-priv.h b/gtk/spice-session-priv.h
+index 94535a8..4b2c151 100644
+--- a/gtk/spice-session-priv.h
++++ b/gtk/spice-session-priv.h
+@@ -18,12 +18,20 @@
+ #ifndef __SPICE_CLIENT_SESSION_PRIV_H__
+ #define __SPICE_CLIENT_SESSION_PRIV_H__
+ 
++#include "config.h"
++
+ #include <glib.h>
+ #include <gio/gio.h>
++
++#ifdef USE_PHODAV
++#include <libphodav/phodav.h>
++#else
++typedef struct _PhodavServer PhodavServer;
++#endif
++
+ #include "desktop-integration.h"
+ #include "spice-session.h"
+ #include "spice-gtk-session.h"
+-#include "phodav/libphodav/phodav.h"
+ #include "spice-channel-cache.h"
+ #include "decode.h"
+ 
+--
+cgit v0.9.0.2-2-gbebe

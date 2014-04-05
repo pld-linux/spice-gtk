@@ -8,14 +8,15 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.23
+Version:	0.24
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	575c6f532067e4003754e9b050a27bec
+# Source0-md5:	b1dec0cc3d8253deea70cfcfcce334b6
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
+Patch2:		%{name}-phodav.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.57
 BuildRequires:	automake >= 1.6
@@ -25,7 +26,7 @@ BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-devel >= 0.17
 BuildRequires:	gobject-introspection-devel >= 0.9.4
-BuildRequires:	glib2-devel >= 1:2.26
+BuildRequires:	glib2-devel >= 1:2.28
 BuildRequires:	gtk-doc >= 1.14
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
@@ -35,8 +36,10 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	openssl-devel
+BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-Text-CSV
 BuildRequires:	perl-base >= 1:5.8.1
+BuildRequires:	phodav-devel
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
@@ -108,8 +111,9 @@ Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	celt051 >= 0.5.1.1
-Requires:	glib2 >= 1:2.26
+Requires:	glib2 >= 1:2.28
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
+Requires:	opus >= 0.9.14
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
 Requires:	libusb >= 1.0.16
@@ -128,7 +132,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	celt051-devel >= 0.5.1.1
 Requires:	cyrus-sasl-devel >= 2.0
-Requires:	glib2-devel >= 1:2.26
+Requires:	glib2-devel >= 1:2.28
 %{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
 Requires:	libjpeg-devel
 Requires:	openssl-devel
@@ -240,6 +244,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
