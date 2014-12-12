@@ -4,16 +4,17 @@
 %bcond_without	gtk3		# GTK+ 3 interfaces
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
+%bcond_without	static_libs	# static libraries
 #
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.25
+Version:	0.27
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	a79f1ff8b21d295b2a028e52708fb551
+# Source0-md5:	722105732b37bbcd04c4051ff44c2fdd
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
 URL:		http://spice-space.org/
@@ -34,6 +35,7 @@ BuildRequires:	intltool >= 0.40.0
 BuildRequires:	libjpeg-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.0
+BuildRequires:	lz4-devel
 BuildRequires:	openssl-devel
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-Text-CSV
@@ -257,8 +259,10 @@ mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 %if %{with gtk2}
 cd gtk2
 ../%configure \
+	--enable-lz4 \
 	--disable-silent-rules \
 	%{!?with_smartcard:--disable-smartcard} \
+	%{?with_static_libs:--enable-static} \
 	%{!?with_usbredir:--disable-usbredir} \
 	--with-gtk=2.0 \
 	--with-html-dir=%{_gtkdocdir}
@@ -269,10 +273,12 @@ cd ..
 %if %{with gtk3}
 cd gtk3
 ../%configure \
+	--enable-gtk-doc \
+	--enable-lz4 \
 	--disable-silent-rules \
 	%{!?with_smartcard:--disable-smartcard} \
+	%{?with_static_libs:--enable-static} \
 	%{!?with_usbredir:--disable-usbredir} \
-	--enable-gtk-doc \
 	--with-gtk=3.0 \
 	--with-html-dir=%{_gtkdocdir}
 %{__make}
@@ -292,7 +298,10 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 %endif
 
-%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.{la,a}
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.la
+%if %{with static_libs}
+%{__rm} $RPM_BUILD_ROOT%{py_sitedir}/SpiceClientGtk.a
+%endif
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
 
@@ -320,6 +329,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libspice-client-gtk-3.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libspice-client-gtk-3.0.so.4
 %{_libdir}/girepository-1.0/SpiceClientGtk-3.0.typelib
+%{_mandir}/man1/spice-client.1*
 
 %files devel
 %defattr(644,root,root,755)
@@ -328,9 +338,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/spice-client-gtk-3.0.pc
 %{_datadir}/gir-1.0/SpiceClientGtk-3.0.gir
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-gtk-3.0.a
+%endif
 
 %files apidocs
 %defattr(644,root,root,755)
@@ -355,10 +367,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/spice-controller.pc
 %{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
 
+%if %{with static_libs}
 %files -n spice-glib-static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-glib-2.0.a
 %{_libdir}/libspice-controller.a
+%endif
 
 %if %{with usbredir}
 %files -n spice-glib-usb
@@ -381,9 +395,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/spice-client-gtk-2.0.pc
 %{_datadir}/gir-1.0/SpiceClientGtk-2.0.gir
 
+%if %{with static_libs}
 %files -n spice-gtk2-static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-gtk-2.0.a
+%endif
 
 %files -n python-spice-gtk
 %defattr(644,root,root,755)
