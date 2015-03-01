@@ -40,7 +40,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-Text-CSV
 BuildRequires:	perl-base >= 1:5.8.1
-BuildRequires:	phodav-devel
+BuildRequires:	phodav-devel < 2
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
