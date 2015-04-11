@@ -9,12 +9,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.27
+Version:	0.28
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	722105732b37bbcd04c4051ff44c2fdd
+# Source0-md5:	ad07d438ce6dfbb038aa8e28f5a2fb81
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
 URL:		http://spice-space.org/
@@ -26,7 +26,7 @@ BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	gobject-introspection-devel >= 0.9.4
-BuildRequires:	glib2-devel >= 1:2.28
+BuildRequires:	glib2-devel >= 1:2.44
 BuildRequires:	gtk-doc >= 1.14
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
@@ -40,7 +40,7 @@ BuildRequires:	openssl-devel
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-Text-CSV
 BuildRequires:	perl-base >= 1:5.8.1
-BuildRequires:	phodav-devel < 2
+BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
