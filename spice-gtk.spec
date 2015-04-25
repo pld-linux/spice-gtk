@@ -33,6 +33,7 @@ BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	intltool >= 0.40.0
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
 BuildRequires:	libjpeg-devel
+BuildRequires:	libsoup-devel >= 2.50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.0
 BuildRequires:	lz4-devel
@@ -112,8 +113,9 @@ Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	celt051 >= 0.5.1.1
-Requires:	glib2 >= 1:2.28
+Requires:	glib2 >= 1:2.44
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
+Requires:	libsoup >= 2.50
 Requires:	opus >= 0.9.14
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
@@ -133,7 +135,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	celt051-devel >= 0.5.1.1
 Requires:	cyrus-sasl-devel >= 2.0
-Requires:	glib2-devel >= 1:2.28
+Requires:	glib2-devel >= 1:2.44
 %{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
 Requires:	libjpeg-devel
 Requires:	openssl-devel
