@@ -1,5 +1,5 @@
---- spice-gtk-0.9/gtk/Makefile.am.orig	2012-01-31 14:31:38.000000000 +0100
-+++ spice-gtk-0.9/gtk/Makefile.am	2012-02-04 08:30:40.437278387 +0100
+--- spice-gtk-0.29/src/Makefile.am.orig	2012-01-31 14:31:38.000000000 +0100
++++ spice-gtk-0.29/src/Makefile.am	2012-02-04 08:30:40.437278387 +0100
 @@ -549,7 +549,7 @@
  DEFSDIR = `pkg-config --variable=defsdir pygtk-2.0`
  
