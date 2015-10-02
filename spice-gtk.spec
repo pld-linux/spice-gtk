@@ -9,17 +9,18 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.29
+Version:	0.30
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	f84b8fd6a5e926dce07ec5ebb5f0caf3
+# Source0-md5:	723e0e9ce9d507ba5d6cd331a3a9b7fb
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
+Patch2:		%{name}-codegen.patch
 URL:		http://spice-space.org/
-BuildRequires:	autoconf >= 2.57
-BuildRequires:	automake >= 1.6
+BuildRequires:	autoconf >= 2.63
+BuildRequires:	automake >= 1:1.11
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	celt051-devel >= 0.5.1.1
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -46,7 +47,8 @@ BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.10.1
+BuildRequires:	spice-protocol >= 0.12.10
+BuildRequires:	spice-protocol-codegen >= 0.12.10
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
@@ -142,7 +144,7 @@ Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
 Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.10.1
+Requires:	spice-protocol >= 0.12.10
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.16
 Requires:	usbredir-devel >= 0.5.2
@@ -234,7 +236,7 @@ Pythonowy interfejs do biblioteki klienckiej SPICE GTK.
 Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	spice-protocol >= 0.10.1
+Requires:	spice-protocol >= 0.12.10
 Requires:	vala >= 2:0.14
 
 %description -n vala-spice-protocol
@@ -247,6 +249,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
@@ -257,6 +260,12 @@ mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 %{__autoconf}
 %{__autoheader}
 %{__automake}
+cd spice-common
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+cd ..
 
 %if %{with gtk2}
 cd gtk2
@@ -267,7 +276,9 @@ cd gtk2
 	%{?with_static_libs:--enable-static} \
 	%{!?with_usbredir:--disable-usbredir} \
 	--with-gtk=2.0 \
-	--with-html-dir=%{_gtkdocdir}
+	--with-html-dir=%{_gtkdocdir} \
+	--with-pnp-ids-path=/lib/hwdata/pnp.ids \
+	--with-usb-ids-path=/lib/hwdata/usb.ids
 %{__make}
 cd ..
 %endif
@@ -282,7 +293,9 @@ cd gtk3
 	%{?with_static_libs:--enable-static} \
 	%{!?with_usbredir:--disable-usbredir} \
 	--with-gtk=3.0 \
-	--with-html-dir=%{_gtkdocdir}
+	--with-html-dir=%{_gtkdocdir} \
+	--with-pnp-ids-path=/lib/hwdata/pnp.ids \
+	--with-usb-ids-path=/lib/hwdata/usb.ids
 %{__make}
 %endif
 
