@@ -5,12 +5,12 @@
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
 %bcond_without	static_libs	# static libraries
-#
+
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
 Version:	0.30
-Release:	2
+Release:	3
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
@@ -26,11 +26,11 @@ BuildRequires:	celt051-devel >= 0.5.1.1
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	glib2-devel >= 1:2.44
-BuildRequires:	gtk-doc >= 1.14
+BuildRequires:	gobject-introspection-devel >= 0.9.4
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
+BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	intltool >= 0.40.0
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
 BuildRequires:	libjpeg-devel
@@ -78,8 +78,8 @@ Summary:	Header files for SPICE GTK 3.0 client library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	spice-glib-devel = %{version}-%{release}
 Requires:	gtk+3-devel >= 3.0
+Requires:	spice-glib-devel = %{version}-%{release}
 
 %description devel
 Header files for SPICE GTK 3.0 client library.
@@ -172,8 +172,8 @@ Statyczna biblioteka kliencka SPICE GLib.
 Summary:	USB redirection ACL helper for SPICE Client GLib library
 Summary(pl.UTF-8):	Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej SPICE GLib
 Group:		Applications/System
-Requires:	spice-glib = %{version}-%{release}
 Requires:	polkit >= 0.96
+Requires:	spice-glib = %{version}-%{release}
 
 %description -n spice-glib-usb
 USB redirection ACL helper for SPICE Client GLib library.
@@ -238,6 +238,9 @@ Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
 Requires:	spice-protocol >= 0.12.10
 Requires:	vala >= 2:0.14
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description -n vala-spice-protocol
 Vala API for SPICE client library.
