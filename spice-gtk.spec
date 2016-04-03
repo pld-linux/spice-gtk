@@ -9,15 +9,14 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.30
-Release:	3
+Version:	0.31
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	723e0e9ce9d507ba5d6cd331a3a9b7fb
+# Source0-md5:	1ef438eabc19b0f339d746a93cab4f56
 Patch0:		%{name}-builddir.patch
 Patch1:		%{name}-am.patch
-Patch2:		%{name}-codegen.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11
@@ -28,11 +27,14 @@ BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-tools >= 0.17
 BuildRequires:	glib2-devel >= 1:2.44
 BuildRequires:	gobject-introspection-devel >= 0.9.4
+BuildRequires:	gstreamer-devel >= 1.0
+BuildRequires:	gstreamer-plugins-base-devel >= 1.0
 %{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.18.0}
 %{?with_gtk3:BuildRequires:	gtk+3-devel >= 3.0}
 BuildRequires:	gtk-doc >= 1.14
 BuildRequires:	intltool >= 0.40.0
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
+BuildRequires:	libepoxy-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libsoup-devel >= 2.50
 BuildRequires:	libstdc++-devel
@@ -46,9 +48,11 @@ BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
+BuildRequires:	python >= 2
+BuildRequires:	python-pyparsing
+BuildRequires:	python-six
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.12.10
-BuildRequires:	spice-protocol-codegen >= 0.12.10
+BuildRequires:	spice-protocol >= 0.12.11
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
@@ -144,7 +148,7 @@ Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
 Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.12.10
+Requires:	spice-protocol >= 0.12.11
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.16
 Requires:	usbredir-devel >= 0.5.2
@@ -236,7 +240,7 @@ Pythonowy interfejs do biblioteki klienckiej SPICE GTK.
 Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	spice-protocol >= 0.12.10
+Requires:	spice-protocol >= 0.12.11
 Requires:	vala >= 2:0.14
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
@@ -252,7 +256,6 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 mkdir %{?with_gtk2:gtk2} %{?with_gtk3:gtk3}
 
