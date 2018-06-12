@@ -7,12 +7,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.34
+Version:	0.35
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	ec01b0b50337aa23f0566423b2f83109
+# Source0-md5:	a8c919ee4a48dfeab619deb70900d788
 Patch0:		%{name}-am.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.63
@@ -21,8 +21,8 @@ BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	celt051-devel >= 0.5.1.1
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
-BuildRequires:	gettext-tools >= 0.17
-BuildRequires:	glib2-devel >= 1:2.44
+BuildRequires:	gettext-tools >= 0.19.8
+BuildRequires:	glib2-devel >= 1:2.46
 BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gstreamer-plugins-base-devel >= 1.0
@@ -44,7 +44,8 @@ BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.12.11
+BuildRequires:	spice-protocol >= 0.12.14
+BuildRequires:	vala >= 0.14
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	zlib-devel
@@ -211,8 +212,10 @@ cd spice-common
 cd ..
 
 %configure \
+	--enable-celt051 \
 	--enable-gtk-doc \
 	--enable-lz4 \
+	--enable-vala \
 	--disable-silent-rules \
 	%{!?with_smartcard:--disable-smartcard} \
 	%{?with_static_libs:--enable-static} \
@@ -275,25 +278,19 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libspice-client-glib-2.0.so.8
-%attr(755,root,root) %{_libdir}/libspice-controller.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libspice-controller.so.0
 %{_libdir}/girepository-1.0/SpiceClientGLib-2.0.typelib
 
 %files -n spice-glib-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libspice-client-glib-2.0.so
-%attr(755,root,root) %{_libdir}/libspice-controller.so
 %{_includedir}/spice-client-glib-2.0
-%{_includedir}/spice-controller
 %{_pkgconfigdir}/spice-client-glib-2.0.pc
-%{_pkgconfigdir}/spice-controller.pc
 %{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
 
 %if %{with static_libs}
 %files -n spice-glib-static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-glib-2.0.a
-%{_libdir}/libspice-controller.a
 %endif
 
 %if %{with usbredir}
@@ -305,4 +302,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -n vala-spice-protocol
 %defattr(644,root,root,755)
-%{_datadir}/vala/vapi/spice-protocol.vapi
+%{_datadir}/vala/vapi/spice-client-glib-2.0.deps
+%{_datadir}/vala/vapi/spice-client-glib-2.0.vapi
+%{_datadir}/vala/vapi/spice-client-gtk-3.0.deps
+%{_datadir}/vala/vapi/spice-client-gtk-3.0.vapi
