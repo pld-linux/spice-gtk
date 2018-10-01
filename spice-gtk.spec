@@ -296,7 +296,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with usbredir}
 %files -n spice-glib-usb
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/spice-client-glib-usb-acl-helper
+%attr(4755,root,root) %{_bindir}/spice-client-glib-usb-acl-helper
 %{_datadir}/polkit-1/actions/org.spice-space.lowlevelusbaccess.policy
 %endif
 
