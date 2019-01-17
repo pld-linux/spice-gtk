@@ -7,12 +7,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.35
-Release:	2
+Version:	0.36
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	a8c919ee4a48dfeab619deb70900d788
+# Source0-md5:	2b5561bcd386ff403eed59cc34cbaa1b
 Patch0:		%{name}-am.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.63
@@ -44,7 +44,7 @@ BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.12.14
+BuildRequires:	spice-protocol >= 0.12.15
 BuildRequires:	vala >= 0.14
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
@@ -204,12 +204,12 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-cd spice-common
+cd subprojects/spice-common
 %{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
-cd ..
+cd ../..
 
 %configure \
 	--enable-celt051 \
@@ -248,7 +248,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS NEWS README THANKS TODO
+%doc AUTHORS NEWS README THANKS
 %attr(755,root,root) %{_bindir}/spicy
 %attr(755,root,root) %{_bindir}/spicy-screenshot
 %attr(755,root,root) %{_bindir}/spicy-stats
