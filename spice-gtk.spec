@@ -26,7 +26,7 @@ BuildRequires:	glib2-devel >= 1:2.46
 BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	gstreamer-devel >= 1.0
 BuildRequires:	gstreamer-plugins-base-devel >= 1.0
-BuildRequires:	gtk+3-devel >= 3.0
+BuildRequires:	gtk+3-devel >= 3.22
 BuildRequires:	gtk-doc >= 1.14
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
 BuildRequires:	libepoxy-devel
@@ -55,6 +55,7 @@ BuildRequires:	libusb-devel >= 1.0.16
 BuildRequires:	polkit-devel >= 0.96
 BuildRequires:	usbredir-devel >= 0.5.2
 %endif
+Requires:	gtk+3 >= 3.22
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -70,7 +71,7 @@ Summary:	Header files for SPICE GTK 3.0 client library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	gtk+3-devel >= 3.0
+Requires:	gtk+3-devel >= 3.22
 Requires:	spice-glib-devel = %{version}-%{release}
 
 %description devel
@@ -110,7 +111,7 @@ Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	celt051 >= 0.5.1.1
-Requires:	glib2 >= 1:2.44
+Requires:	glib2 >= 1:2.46
 %{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	libsoup >= 2.50
 Requires:	opus >= 0.9.14
@@ -132,7 +133,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	celt051-devel >= 0.5.1.1
 Requires:	cyrus-sasl-devel >= 2.0
-Requires:	glib2-devel >= 1:2.44
+Requires:	glib2-devel >= 1:2.46
 %{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
 Requires:	libjpeg-devel
 Requires:	openssl-devel
