@@ -7,12 +7,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.36
+Version:	0.37
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	2b5561bcd386ff403eed59cc34cbaa1b
+# Source0-md5:	f1554a2442817109d2bdc37d30336208
 Patch0:		%{name}-am.patch
 URL:		http://spice-space.org/
 BuildRequires:	autoconf >= 2.63
@@ -249,7 +249,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS NEWS README THANKS
+%doc AUTHORS CHANGELOG.md README.md
 %attr(755,root,root) %{_bindir}/spicy
 %attr(755,root,root) %{_bindir}/spicy-screenshot
 %attr(755,root,root) %{_bindir}/spicy-stats
