@@ -2,21 +2,17 @@
 # Conditional build:
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
-%bcond_without	static_libs	# static libraries
 
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.37
+Version:	0.38
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
-Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.bz2
-# Source0-md5:	f1554a2442817109d2bdc37d30336208
-Patch0:		%{name}-am.patch
+Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
+# Source0-md5:	41c5dc01d92886e5e11c70da2724d46b
 URL:		http://spice-space.org/
-BuildRequires:	autoconf >= 2.63
-BuildRequires:	automake >= 1:1.11
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	celt051-devel >= 0.5.1.1
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -33,8 +29,9 @@ BuildRequires:	libepoxy-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libsoup-devel >= 2.50
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:2.0
 BuildRequires:	lz4-devel
+BuildRequires:	meson >= 0.49
+BuildRequires:	ninja
 BuildRequires:	openssl-devel
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-Text-CSV
@@ -43,15 +40,18 @@ BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	pulseaudio-devel
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.12.15
+BuildRequires:	spice-protocol >= 0.14.1
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala >= 0.14
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
+BuildRequires:	xz
 BuildRequires:	zlib-devel
 %if %{with usbredir}
 BuildRequires:	acl-devel
-BuildRequires:	libusb-devel >= 1.0.16
+BuildRequires:	libusb-devel >= 1.0.21
 BuildRequires:	polkit-devel >= 0.96
 BuildRequires:	usbredir-devel >= 0.5.2
 %endif
@@ -117,7 +117,7 @@ Requires:	libsoup >= 2.50
 Requires:	opus >= 0.9.14
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
-Requires:	libusb >= 1.0.16
+Requires:	libusb >= 1.0.21
 Requires:	usbredir >= 0.5.2
 %endif
 
@@ -140,9 +140,9 @@ Requires:	openssl-devel
 Requires:	pixman-devel >= 0.17.7
 Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.12.11
+Requires:	spice-protocol >= 0.14.1
 %if %{with usbredir}
-Requires:	libusb-devel >= 1.0.16
+Requires:	libusb-devel >= 1.0.21
 Requires:	usbredir-devel >= 0.5.2
 %endif
 
@@ -182,7 +182,7 @@ SPICE GLib.
 Summary:	Vala API for SPICE client library
 Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
 Group:		Development/Libraries
-Requires:	spice-protocol >= 0.12.11
+Requires:	spice-protocol >= 0.14.1
 Requires:	vala >= 2:0.14
 %if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
@@ -196,45 +196,22 @@ Interfejs języka Vala do biblioteki klienckiej SPICE.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
-%{__gettextize}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-cd subprojects/spice-common
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-cd ../..
-
-%configure \
-	--enable-celt051 \
-	--enable-gtk-doc \
-	--enable-lz4 \
-	--enable-vala \
-	--disable-silent-rules \
-	%{!?with_smartcard:--disable-smartcard} \
-	%{?with_static_libs:--enable-static} \
-	%{!?with_usbredir:--disable-usbredir} \
-	--with-gtk=3.0 \
-	--with-html-dir=%{_gtkdocdir} \
-	--with-pnp-ids-path=/lib/hwdata/pnp.ids \
-	--with-usb-ids-path=/lib/hwdata/usb.ids
-%{__make}
+%meson build \
+	-Dcelt051=enabled \
+	-Dgtk_doc=enabled \
+	-Dlz4=enabled \
+	-Dvapi=enabled \
+	-Dsmartcard=%{?with_smartcard:enabled}%{!?with_smartcard:disabled} \
+	-Dusbredir=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
+	-Dusb-ids-path=/lib/hwdata/usb.ids
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install -j1 \
-	DESTDIR=$RPM_BUILD_ROOT
-
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/lib*.la
+%ninja_install -C build
 
 %find_lang %{name}
 
@@ -265,11 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/spice-client-gtk-3.0.pc
 %{_datadir}/gir-1.0/SpiceClientGtk-3.0.gir
 
-%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-gtk-3.0.a
-%endif
 
 %files apidocs
 %defattr(644,root,root,755)
@@ -288,11 +263,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/spice-client-glib-2.0.pc
 %{_datadir}/gir-1.0/SpiceClientGLib-2.0.gir
 
-%if %{with static_libs}
 %files -n spice-glib-static
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-glib-2.0.a
-%endif
 
 %if %{with usbredir}
 %files -n spice-glib-usb
