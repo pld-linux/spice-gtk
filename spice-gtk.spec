@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_without	celt		# CELT codec support
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
 
@@ -7,35 +8,35 @@ Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
 Version:	0.38
-Release:	1
+Release:	2
 License:	LGPL v2.1+
 Group:		X11/Applications
-Source0:	http://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
+Source0:	https://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
 # Source0-md5:	41c5dc01d92886e5e11c70da2724d46b
-URL:		http://spice-space.org/
+URL:		https://spice-space.org/
 BuildRequires:	cairo-devel >= 1.2.0
-BuildRequires:	celt051-devel >= 0.5.1.1
+%{?with_celt:BuildRequires:	celt051-devel >= 0.5.1.1}
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-tools >= 0.19.8
 BuildRequires:	glib2-devel >= 1:2.46
 BuildRequires:	gobject-introspection-devel >= 0.9.4
-BuildRequires:	gstreamer-devel >= 1.0
-BuildRequires:	gstreamer-plugins-base-devel >= 1.0
+BuildRequires:	gstreamer-devel >= 1.10
+BuildRequires:	gstreamer-plugins-base-devel >= 1.10
 BuildRequires:	gtk+3-devel >= 3.22
 BuildRequires:	gtk-doc >= 1.14
-%{?with_smartcard:BuildRequires:	libcacard-devel >= 0.1.2}
+BuildRequires:	json-glib-devel
+%{?with_smartcard:BuildRequires:	libcacard-devel >= 2.5.1}
 BuildRequires:	libepoxy-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libsoup-devel >= 2.50
 BuildRequires:	libstdc++-devel
+BuildRequires:	libva-x11-devel
 BuildRequires:	lz4-devel
 BuildRequires:	meson >= 0.49
-BuildRequires:	ninja
-BuildRequires:	openssl-devel
+BuildRequires:	ninja >= 1.5
+BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	opus-devel >= 0.9.14
-BuildRequires:	perl-Text-CSV
-BuildRequires:	perl-base >= 1:5.8.1
 BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
@@ -53,10 +54,9 @@ BuildRequires:	zlib-devel
 BuildRequires:	acl-devel
 BuildRequires:	libusb-devel >= 1.0.21
 BuildRequires:	polkit-devel >= 0.96
-BuildRequires:	usbredir-devel >= 0.5.2
+BuildRequires:	usbredir-devel >= 0.7.1
 %endif
 Requires:	gtk+3 >= 3.22
-%{?with_smartcard:Requires:	libcacard >= 0.1.2}
 Requires:	spice-glib = %{version}-%{release}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -72,7 +72,10 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GTK 3.0
 Group:		X11/Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	gtk+3-devel >= 3.22
+Requires:	libepoxy-devel
+Requires:	libva-x11-devel
 Requires:	spice-glib-devel = %{version}-%{release}
+Requires:	xorg-lib-libX11-devel
 
 %description devel
 Header files for SPICE GTK 3.0 client library.
@@ -92,11 +95,28 @@ Static SPICE GTK 3.0 client library.
 %description static -l pl.UTF-8
 Statyczna biblioteka kliencka SPICE GTK 3.0.
 
+%package -n vala-spice-gtk
+Summary:	Vala API for SPICE GTK client library
+Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE GTK
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	vala >= 2:0.14
+Requires:	vala-spice-glib = %{version}-%{release}
+%if "%{_rpmversion}" >= "4.6"
+BuildArch:	noarch
+%endif
+
+%description -n vala-spice-gtk
+Vala API for SPICE GTK client library.
+
+%description -n vala-spice-gtk -l pl.UTF-8
+Interfejs języka Vala do biblioteki klienckiej SPICE GTK.
+
 %package apidocs
 Summary:	SPICE GTK API documentation
 Summary(pl.UTF-8):	Dokumentacja API bibliotek SPICE GTK
 Group:		Documentation
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -110,15 +130,19 @@ Dokumentacja API bibliotek SPICE GTK.
 Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
-Requires:	celt051 >= 0.5.1.1
+Requires:	cairo >= 1.2.0
+%{?with_celt:Requires:	celt051 >= 0.5.1.1}
 Requires:	glib2 >= 1:2.46
-%{?with_smartcard:Requires:	libcacard >= 0.1.2}
+%{?with_smartcard:Requires:	libcacard >= 2.5.1}
 Requires:	libsoup >= 2.50
+Requires:	gstreamer >= 1.10
+Requires:	gstreamer-plugins-base >= 1.10
+Requires:	openssl >= 1.0.0
 Requires:	opus >= 0.9.14
 Requires:	pixman >= 0.17.7
 %if %{with usbredir}
 Requires:	libusb >= 1.0.21
-Requires:	usbredir >= 0.5.2
+Requires:	usbredir >= 0.7.1
 %endif
 
 %description -n spice-glib
@@ -131,19 +155,29 @@ Biblioteka kliencka SPICE GLib.
 Summary:	Header files for SPICE Client GLib library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
-Requires:	celt051-devel >= 0.5.1.1
+Requires:	cairo-devel >= 1.2.0
+%{?with_celt:Requires:	celt051-devel >= 0.5.1.1}
 Requires:	cyrus-sasl-devel >= 2.0
 Requires:	glib2-devel >= 1:2.46
-%{?with_smartcard:Requires:	libcacard-devel >= 0.1.2}
+Requires:	gobject-introspection-devel >= 0.9.4
+Requires:	gstreamer-devel >= 1.10
+Requires:	gstreamer-plugins-base-devel >= 1.10
+Requires:	json-glib-devel
+%{?with_smartcard:Requires:	libcacard-devel >= 2.5.1}
 Requires:	libjpeg-devel
-Requires:	openssl-devel
+Requires:	libsoup-devel >= 2.50
+Requires:	lz4-devel
+Requires:	openssl-devel >= 1.0.0
+Requires:	opus-devel >= 0.9.14
+Requires:	phodav-devel >= 2.0
 Requires:	pixman-devel >= 0.17.7
 Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
 Requires:	spice-protocol >= 0.14.1
+Requires:	zlib-devel
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.21
-Requires:	usbredir-devel >= 0.5.2
+Requires:	usbredir-devel >= 0.7.1
 %endif
 
 %description -n spice-glib-devel
@@ -164,6 +198,24 @@ SPICE Client GLib static library.
 %description -n spice-glib-static -l pl.UTF-8
 Statyczna biblioteka kliencka SPICE GLib.
 
+%package -n vala-spice-glib
+Summary:	Vala API for SPICE GLib client library
+Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE GLib
+Group:		Development/Libraries
+Requires:	spice-glib-devel = %{version}-%{release}
+Requires:	vala >= 2:0.14
+# versions 0.35 through 0.38-1 were actually spice-client-glib + spice-client-gtk vapis
+Obsoletes:	vala-spice-protocol < 0.38-2
+%if "%{_rpmversion}" >= "4.6"
+BuildArch:	noarch
+%endif
+
+%description -n vala-spice-glib
+Vala API for SPICE GLib client library.
+
+%description -n vala-spice-glib -l pl.UTF-8
+Interfejs języka Vala do biblioteki klienckiej SPICE GLib.
+
 %package -n spice-glib-usb
 Summary:	USB redirection ACL helper for SPICE Client GLib library
 Summary(pl.UTF-8):	Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej SPICE GLib
@@ -178,34 +230,24 @@ USB redirection ACL helper for SPICE Client GLib library.
 Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej
 SPICE GLib.
 
-%package -n vala-spice-protocol
-Summary:	Vala API for SPICE client library
-Summary(pl.UTF-8):	Interfejs języka Vala do biblioteki klienckiej SPICE
-Group:		Development/Libraries
-Requires:	spice-protocol >= 0.14.1
-Requires:	vala >= 2:0.14
-%if "%{_rpmversion}" >= "5"
-BuildArch:	noarch
-%endif
-
-%description -n vala-spice-protocol
-Vala API for SPICE client library.
-
-%description -n vala-spice-protocol -l pl.UTF-8
-Interfejs języka Vala do biblioteki klienckiej SPICE.
-
 %prep
 %setup -q
 
 %build
+%if %{with celt}
+# CELT is deprecated in spice-protocol 0.14.x
+CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
+%endif
 %meson build \
-	-Dcelt051=enabled \
+	%{?with_celt:-Dcelt051=enabled} \
 	-Dgtk_doc=enabled \
 	-Dlz4=enabled \
-	-Dvapi=enabled \
+	-Dpolkit=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
 	-Dsmartcard=%{?with_smartcard:enabled}%{!?with_smartcard:disabled} \
 	-Dusbredir=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
-	-Dusb-ids-path=/lib/hwdata/usb.ids
+	-Dusb-ids-path=/lib/hwdata/usb.ids \
+	-Dvapi=enabled
+
 %ninja_build -C build
 
 %install
@@ -246,6 +288,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-gtk-3.0.a
 
+%files -n vala-spice-gtk
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/spice-client-gtk-3.0.deps
+%{_datadir}/vala/vapi/spice-client-gtk-3.0.vapi
+
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/spice-gtk
@@ -267,16 +314,14 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libspice-client-glib-2.0.a
 
+%files -n vala-spice-glib
+%defattr(644,root,root,755)
+%{_datadir}/vala/vapi/spice-client-glib-2.0.deps
+%{_datadir}/vala/vapi/spice-client-glib-2.0.vapi
+
 %if %{with usbredir}
 %files -n spice-glib-usb
 %defattr(644,root,root,755)
 %attr(4755,root,root) %{_bindir}/spice-client-glib-usb-acl-helper
 %{_datadir}/polkit-1/actions/org.spice-space.lowlevelusbaccess.policy
 %endif
-
-%files -n vala-spice-protocol
-%defattr(644,root,root,755)
-%{_datadir}/vala/vapi/spice-client-glib-2.0.deps
-%{_datadir}/vala/vapi/spice-client-glib-2.0.vapi
-%{_datadir}/vala/vapi/spice-client-gtk-3.0.deps
-%{_datadir}/vala/vapi/spice-client-gtk-3.0.vapi
