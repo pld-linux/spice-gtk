@@ -1,25 +1,23 @@
 #
 # Conditional build:
-%bcond_without	celt		# CELT codec support
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
 
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.38
-Release:	2
+Version:	0.39
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	https://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
-# Source0-md5:	41c5dc01d92886e5e11c70da2724d46b
+# Source0-md5:	5bdc76d5105d2b4b4472063fe04ef033
 URL:		https://spice-space.org/
 BuildRequires:	cairo-devel >= 1.2.0
-%{?with_celt:BuildRequires:	celt051-devel >= 0.5.1.1}
 BuildRequires:	cyrus-sasl-devel >= 2.0
 BuildRequires:	gcc >= 5:3.0
 BuildRequires:	gettext-tools >= 0.19.8
-BuildRequires:	glib2-devel >= 1:2.46
+BuildRequires:	glib2-devel >= 1:2.52
 BuildRequires:	gobject-introspection-devel >= 0.9.4
 BuildRequires:	gstreamer-devel >= 1.10
 BuildRequires:	gstreamer-plugins-base-devel >= 1.10
@@ -33,19 +31,20 @@ BuildRequires:	libsoup-devel >= 2.50
 BuildRequires:	libstdc++-devel
 BuildRequires:	libva-x11-devel
 BuildRequires:	lz4-devel
-BuildRequires:	meson >= 0.49
+BuildRequires:	meson >= 0.53
 BuildRequires:	ninja >= 1.5
 BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
-BuildRequires:	pulseaudio-devel
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	sed >= 4.0
-BuildRequires:	spice-protocol >= 0.14.1
+BuildRequires:	spice-protocol >= 0.14.3
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala >= 0.14
+BuildRequires:	wayland-devel >= 1.17.0
+BuildRequires:	wayland-protocols >= 1.17
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXrandr-devel
 BuildRequires:	xz
@@ -53,7 +52,7 @@ BuildRequires:	zlib-devel
 %if %{with usbredir}
 BuildRequires:	acl-devel
 BuildRequires:	libusb-devel >= 1.0.21
-BuildRequires:	polkit-devel >= 0.96
+BuildRequires:	polkit-devel >= 0.101
 BuildRequires:	usbredir-devel >= 0.7.1
 %endif
 Requires:	gtk+3 >= 3.22
@@ -131,8 +130,7 @@ Summary:	SPICE Client GLib library
 Summary(pl.UTF-8):	Biblioteka kliencka SPICE GLib
 Group:		Libraries
 Requires:	cairo >= 1.2.0
-%{?with_celt:Requires:	celt051 >= 0.5.1.1}
-Requires:	glib2 >= 1:2.46
+Requires:	glib2 >= 1:2.52
 %{?with_smartcard:Requires:	libcacard >= 2.5.1}
 Requires:	libsoup >= 2.50
 Requires:	gstreamer >= 1.10
@@ -156,14 +154,14 @@ Summary:	Header files for SPICE Client GLib library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki klienckiej SPICE GLib
 Group:		Development/Libraries
 Requires:	cairo-devel >= 1.2.0
-%{?with_celt:Requires:	celt051-devel >= 0.5.1.1}
 Requires:	cyrus-sasl-devel >= 2.0
-Requires:	glib2-devel >= 1:2.46
+Requires:	glib2-devel >= 1:2.52
 Requires:	gobject-introspection-devel >= 0.9.4
 Requires:	gstreamer-devel >= 1.10
 Requires:	gstreamer-plugins-base-devel >= 1.10
 Requires:	json-glib-devel
 %{?with_smartcard:Requires:	libcacard-devel >= 2.5.1}
+Requires:	libcap-ng-devel
 Requires:	libjpeg-devel
 Requires:	libsoup-devel >= 2.50
 Requires:	lz4-devel
@@ -171,9 +169,8 @@ Requires:	openssl-devel >= 1.0.0
 Requires:	opus-devel >= 0.9.14
 Requires:	phodav-devel >= 2.0
 Requires:	pixman-devel >= 0.17.7
-Requires:	pulseaudio-devel
 Requires:	spice-glib = %{version}-%{release}
-Requires:	spice-protocol >= 0.14.1
+Requires:	spice-protocol >= 0.14.3
 Requires:	zlib-devel
 %if %{with usbredir}
 Requires:	libusb-devel >= 1.0.21
@@ -220,7 +217,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE GLib.
 Summary:	USB redirection ACL helper for SPICE Client GLib library
 Summary(pl.UTF-8):	Program pomocniczy ACL do przekierowań USB dla biblioteki klienckiej SPICE GLib
 Group:		Applications/System
-Requires:	polkit >= 0.96
+Requires:	polkit >= 0.101
 Requires:	spice-glib = %{version}-%{release}
 
 %description -n spice-glib-usb
@@ -234,12 +231,7 @@ SPICE GLib.
 %setup -q
 
 %build
-%if %{with celt}
-# CELT is deprecated in spice-protocol 0.14.x
-CFLAGS="%{rpmcflags} -Wno-error=deprecated-declarations"
-%endif
 %meson build \
-	%{?with_celt:-Dcelt051=enabled} \
 	-Dgtk_doc=enabled \
 	-Dlz4=enabled \
 	-Dpolkit=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
@@ -322,6 +314,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with usbredir}
 %files -n spice-glib-usb
 %defattr(644,root,root,755)
-%attr(4755,root,root) %{_bindir}/spice-client-glib-usb-acl-helper
+%attr(755,root,root) %{_libexecdir}/spice-client-glib-usb-acl-helper
 %{_datadir}/polkit-1/actions/org.spice-space.lowlevelusbaccess.policy
 %endif
