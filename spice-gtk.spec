@@ -101,9 +101,7 @@ Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Requires:	vala >= 2:0.14
 Requires:	vala-spice-glib = %{version}-%{release}
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description -n vala-spice-gtk
 Vala API for SPICE GTK client library.
@@ -115,9 +113,7 @@ Interfejs języka Vala do biblioteki klienckiej SPICE GTK.
 Summary:	SPICE GTK API documentation
 Summary(pl.UTF-8):	Dokumentacja API bibliotek SPICE GTK
 Group:		Documentation
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 API documentation for SPICE GTK libraries.
@@ -203,9 +199,7 @@ Requires:	spice-glib-devel = %{version}-%{release}
 Requires:	vala >= 2:0.14
 # versions 0.35 through 0.38-1 were actually spice-client-glib + spice-client-gtk vapis
 Obsoletes:	vala-spice-protocol < 0.38-2
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description -n vala-spice-glib
 Vala API for SPICE GLib client library.
