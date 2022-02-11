@@ -41,6 +41,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	python3
 BuildRequires:	python3-pyparsing
 BuildRequires:	python3-six
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	sed >= 4.0
 BuildRequires:	spice-protocol >= 0.14.3
