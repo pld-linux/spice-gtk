@@ -6,12 +6,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.39
-Release:	2
+Version:	0.40
+Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	https://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
-# Source0-md5:	5bdc76d5105d2b4b4472063fe04ef033
+# Source0-md5:	03dcb437afb31151a421de1d7922e2b1
 URL:		https://spice-space.org/
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -38,6 +38,9 @@ BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	phodav-devel >= 2.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
+BuildRequires:	python3
+BuildRequires:	python3-pyparsing
+BuildRequires:	python3-six
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	sed >= 4.0
 BuildRequires:	spice-protocol >= 0.14.3
