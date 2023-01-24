@@ -6,12 +6,12 @@
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.40
+Version:	0.41
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	https://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
-# Source0-md5:	03dcb437afb31151a421de1d7922e2b1
+# Source0-md5:	b44a82b39b0273fb0443cdbdbc375a26
 URL:		https://spice-space.org/
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -27,7 +27,7 @@ BuildRequires:	json-glib-devel
 %{?with_smartcard:BuildRequires:	libcacard-devel >= 2.5.1}
 BuildRequires:	libepoxy-devel
 BuildRequires:	libjpeg-devel
-BuildRequires:	libsoup-devel >= 2.50
+BuildRequires:	libsoup3-devel >= 3.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	libva-x11-devel
 BuildRequires:	lz4-devel
@@ -36,7 +36,7 @@ BuildRequires:	ninja >= 1.5
 BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	opus-devel >= 0.9.14
 BuildRequires:	perl-tools-pod
-BuildRequires:	phodav-devel >= 2.0
+BuildRequires:	phodav3-devel >= 3.0
 BuildRequires:	pixman-devel >= 0.17.7
 BuildRequires:	pkgconfig
 BuildRequires:	python3
@@ -133,7 +133,7 @@ Group:		Libraries
 Requires:	cairo >= 1.2.0
 Requires:	glib2 >= 1:2.52
 %{?with_smartcard:Requires:	libcacard >= 2.5.1}
-Requires:	libsoup >= 2.50
+Requires:	libsoup3 >= 3.0
 Requires:	gstreamer >= 1.10
 Requires:	gstreamer-plugins-base >= 1.10
 Requires:	openssl >= 1.0.0
@@ -164,11 +164,11 @@ Requires:	json-glib-devel
 %{?with_smartcard:Requires:	libcacard-devel >= 2.5.1}
 Requires:	libcap-ng-devel
 Requires:	libjpeg-devel
-Requires:	libsoup-devel >= 2.50
+Requires:	libsoup3-devel >= 3.0
 Requires:	lz4-devel
 Requires:	openssl-devel >= 1.0.0
 Requires:	opus-devel >= 0.9.14
-Requires:	phodav-devel >= 2.0
+Requires:	phodav3-devel >= 3.0
 Requires:	pixman-devel >= 0.17.7
 Requires:	spice-glib = %{version}-%{release}
 Requires:	spice-protocol >= 0.14.3
