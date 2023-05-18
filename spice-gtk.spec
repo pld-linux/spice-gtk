@@ -2,16 +2,17 @@
 # Conditional build:
 %bcond_without	smartcard	# Smartcard support
 %bcond_without	usbredir	# USB redirection
+%bcond_with	valgrind	# Valgrind tracing support
 
 Summary:	A GTK+ client and libraries for SPICE remote desktop servers
 Summary(pl.UTF-8):	Klient i biblioteki GTK+ dla serwerów zdalnych pulpitów SPICE
 Name:		spice-gtk
-Version:	0.41
+Version:	0.42
 Release:	1
 License:	LGPL v2.1+
 Group:		X11/Applications
 Source0:	https://www.spice-space.org/download/gtk/%{name}-%{version}.tar.xz
-# Source0-md5:	b44a82b39b0273fb0443cdbdbc375a26
+# Source0-md5:	68becfc1192a61265e9981621e9d3dc6
 URL:		https://spice-space.org/
 BuildRequires:	cairo-devel >= 1.2.0
 BuildRequires:	cyrus-sasl-devel >= 2.0
@@ -31,7 +32,7 @@ BuildRequires:	libsoup3-devel >= 3.0
 BuildRequires:	libstdc++-devel
 BuildRequires:	libva-x11-devel
 BuildRequires:	lz4-devel
-BuildRequires:	meson >= 0.53
+BuildRequires:	meson >= 0.56
 BuildRequires:	ninja >= 1.5
 BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	opus-devel >= 0.9.14
@@ -48,6 +49,8 @@ BuildRequires:	sed >= 4.0
 BuildRequires:	spice-protocol >= 0.14.3
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	vala >= 0.14
+# <valgrind/valgrind.h>
+%{?with_valgrind:BuildRequires:	valgrind}
 BuildRequires:	wayland-devel >= 1.17.0
 BuildRequires:	wayland-protocols >= 1.17
 BuildRequires:	xorg-lib-libX11-devel
@@ -237,6 +240,7 @@ SPICE GLib.
 	-Dsmartcard=%{?with_smartcard:enabled}%{!?with_smartcard:disabled} \
 	-Dusbredir=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
 	-Dusb-ids-path=/lib/hwdata/usb.ids \
+	%{?with_valgrind:-Dvalgrind=true} \
 	-Dvapi=enabled
 
 %ninja_build -C build
