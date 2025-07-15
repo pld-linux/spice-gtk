@@ -233,7 +233,7 @@ SPICE GLib.
 %setup -q
 
 %build
-%meson build \
+%meson \
 	-Dgtk_doc=enabled \
 	-Dlz4=enabled \
 	-Dpolkit=%{?with_usbredir:enabled}%{!?with_smartcard:usbredir} \
@@ -243,12 +243,12 @@ SPICE GLib.
 	%{?with_valgrind:-Dvalgrind=true} \
 	-Dvapi=enabled
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %find_lang %{name}
 
